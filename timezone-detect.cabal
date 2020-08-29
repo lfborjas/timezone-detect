@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: bbdeb7267f6da0a0fbe0302ef72ccdf4ae2e73210d27a5c78d59b36facce9e53
+-- hash: 4d0720aa6a2369f226f5638d7bf9b6dc5a9536a8e8cf378e1da8102beaf21686
 
 name:           timezone-detect
 version:        0.1.0.2
@@ -26,6 +26,9 @@ source-repository head
   location: https://github.com/lfborjas/timezone-detect
 
 library
+  exposed-modules:
+      Foreign.ZoneDetect
+      TimezoneDetect
   other-modules:
       Paths_timezone_detect
   hs-source-dirs:
