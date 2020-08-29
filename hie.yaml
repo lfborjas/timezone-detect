@@ -1,0 +1,7 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "timezone-detect:lib"
+
+    - path: "./test"
+      component: "timezone-detect:test:timezone-detect-test"
