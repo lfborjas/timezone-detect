@@ -29,24 +29,6 @@ data ZoneDetectInfo = ZoneDetectInfo
     , dataOffset :: Word32
     }
 
--- ZoneDetect is defined in zonedetect.h
--- instance Storable ZoneDetectInfo where
---     sizeOf _ = (#size ZoneDetect)
---     alignment _ = alignment (undefined :: Word32)
---     peek ptr = ZoneDetectInfo <$> (#peek ZoneDetect, fd) ptr
---                               <*> (#peek ZoneDetect, length) ptr
---                               <*> (#peek ZoneDetect, closeType) ptr
---                               <*> (#peek ZoneDetect, mapping) ptr
---                               <*> (#peek ZoneDetect, tableType) ptr
---                               <*> (#peek ZoneDetect, version) ptr
---                               <*> (#peek ZoneDetect, precision) ptr
---                               <*> (#peek ZoneDetect, numFields) ptr
---                               <*> (#peek ZoneDetect, notice) ptr
---                               <*> (#peek ZoneDetect, fieldNames) ptr
---                               <*> (#peek ZoneDetect, bboxOffset) ptr
---                               <*> (#peek ZoneDetect, metadataOffset) ptr
---                               <*> (#peek ZoneDetect, dataOffset) ptr
-
 foreign import ccall unsafe "zonedetect.h ZDOpenDatabase"
     c_ZDOpenDatabase :: CString -> IO (Ptr ZoneDetectInfo)
 
