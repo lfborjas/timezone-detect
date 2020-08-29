@@ -18,6 +18,6 @@ lookupTimeZone databaseLocation lat lng =
                                                    (realToFrac lat)
                                                    (realToFrac lng)
             if tzName == nullPtr then
-                pure $ Left "Invalid coordinates"
+                pure $ Left "Invalid coordinates."
             else
                 peekCAString tzName >>= (pure . Right)

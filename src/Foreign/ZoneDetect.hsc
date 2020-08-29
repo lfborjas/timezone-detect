@@ -3,8 +3,6 @@
 module Foreign.ZoneDetect where
 
 import Foreign
-import Foreign.Storable
-import Foreign.Ptr
 import Foreign.C.Types
 import Foreign.C.String
 
