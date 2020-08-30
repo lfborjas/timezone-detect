@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 38d5e310ad4b828f71ddd087380182d12af2a28c1d0f6c071a85581c34f499fa
+-- hash: ebb23892cf234bbf3a5844d7423873bb706bb5de69f4d7702cf2e2978d04b6cc
 
 name:           timezone-detect
-version:        0.1.0.0
+version:        0.2.0.0
 synopsis:       Haskell bindings for the zone-detect C library
 description:    Please see the README on GitHub at <https://github.com/lfborjas/timezone-detect#readme>
 category:       Data, Foreign
@@ -43,6 +43,9 @@ library
       csrc/zonedetect.c
   build-depends:
       base >=4.7 && <4.14
+    , time >=1.9.1 && <=1.10
+    , timezone-olson >=0.2.0 && <0.3
+    , timezone-series >=0.1.0 && <0.2
   default-language: Haskell2010
 
 test-suite timezone-detect-test
@@ -60,5 +63,8 @@ test-suite timezone-detect-test
       base >=4.7 && <4.14
     , directory >=1.3 && <1.4
     , hspec >=2.7 && <2.8
+    , time >=1.9.1 && <=1.10
     , timezone-detect
+    , timezone-olson >=0.2.0 && <0.3
+    , timezone-series >=0.1.0 && <0.2
   default-language: Haskell2010
