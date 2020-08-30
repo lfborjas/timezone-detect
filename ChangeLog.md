@@ -1,6 +1,6 @@
 # Changelog for timezone-detect
 
-## v0.2.1.1 (2020-08-30)
+## v0.2.2.0 (2020-08-30)
 
 * Explicitly import `MonadFail` and `fail`, hide `fail` from `Prelude`.
 * Introduces `timeInTimeZoneToUTC`, for when the timezone name is already available.

@@ -1,5 +1,5 @@
 name:                timezone-detect 
-version:             0.2.1.1
+version:             0.2.2.0
 github:              "lfborjas/timezone-detect"
 license:             GPL-2
 author:              "Luis Borjas Reyes"
