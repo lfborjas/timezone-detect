@@ -33,10 +33,12 @@ import Control.Monad.IO.Class (MonadIO(liftIO))
 import Control.Monad.Fail (MonadFail, fail)
 import Prelude hiding (fail)
 
--- | Alias for clarity, timezones are short strings that follow the IANA conventions
+-- | Alias for clarity, timezones are path-like strings that follow the IANA conventions
 -- documented here:
 -- <https://data.iana.org/time-zones/tz-link.html>
-type TimeZoneName = String
+-- and here:
+-- <https://en.wikipedia.org/wiki/Tz_database#Names_of_time_zones>
+type TimeZoneName = FilePath
 
 -- | Gets timezone info from the standard location in UNIX systems.
 -- The name should be one of the standard tz database names, as returned
@@ -71,6 +73,13 @@ lookupTimeZoneName databaseLocation lat lng =
                 peekCAString tzName >>= (pure . return)
 
 
+-- | Given a timezone name (presumably obtained via `lookupTimeZoneName`,)
+-- and a reference time in `LocalTime`, find the UTC equivalent.
+timeInTimeZoneToUTC :: TimeZoneName -> LocalTime -> IO UTCTime
+timeInTimeZoneToUTC tzName referenceTime = do
+    tzSeries <- getTimeZoneSeriesFromOlsonFileUNIX tzName
+    return $ localTimeToUTC' tzSeries referenceTime
+
 -- | Given a timezone database, latitude, longitude and a local reference time, find the UTC Time
 -- equivalent of that reference time in the given timezone. The reference time helps determine
 -- which offset was in effect, since daylight savings, historical circumstances, political revisions
@@ -79,12 +88,4 @@ lookupTimeZoneName databaseLocation lat lng =
 timeAtPointToUTC :: FilePath -> Double -> Double -> LocalTime -> IO UTCTime
 timeAtPointToUTC databaseLocation lat lng referenceTime = do
     tzName <- lookupTimeZoneName databaseLocation lat lng
-    tzSeries <- liftIO $ getTimeZoneSeriesFromOlsonFileUNIX tzName
-    return $ localTimeToUTC' tzSeries referenceTime
-
--- | Given a timezone name (presumably obtained via `lookupTimeZoneName`,)
--- and a reference time in `LocalTime`, find the UTC equivalent.
-timeInTimeZoneToUTC :: TimeZoneName -> LocalTime -> IO UTCTime
-timeInTimeZoneToUTC tzName referenceTime = do
-    tzSeries <- getTimeZoneSeriesFromOlsonFileUNIX tzName
-    return $ localTimeToUTC' tzSeries referenceTime
+    timeInTimeZoneToUTC tzName referenceTime
