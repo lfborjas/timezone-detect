@@ -39,7 +39,7 @@ spec = do
             outOfThisWorld `shouldBe` Nothing -- invalid coordinates
 
     describe "timeAtPointToUTC" $ do
-        it "calculates a UTC instant at a point in time and space" $ do
+        it "calculates a UTC instant at a point in time and space in New York" $ do
             localWinter <- localTimeFromString "2019-12-25 00:30:00"
             localSummer <- localTimeFromString "2019-08-25 00:30:00"
             utcWinter <- utcFromString "2019-12-25 05:30:00"
@@ -47,6 +47,18 @@ spec = do
             
             atPointWinter <- timeAtPointToUTC' 40.7831 (-73.9712) localWinter
             atPointSummer <- timeAtPointToUTC' 40.7831 (-73.9712) localSummer
+
+            atPointWinter `shouldBe` utcWinter
+            atPointSummer `shouldBe` utcSummer
+
+        it "calculates a UTC instant at a point in time and space in Tegucigalpa (no DST)" $ do
+            localWinter <- localTimeFromString "2019-12-25 00:30:00"
+            localSummer <- localTimeFromString "2019-08-25 00:30:00"
+            utcWinter <- utcFromString "2019-12-25 06:30:00"
+            utcSummer <- utcFromString "2019-08-25 06:30:00"
+            
+            atPointWinter <- timeAtPointToUTC' 14.0650 (-87.1715) localWinter
+            atPointSummer <- timeAtPointToUTC' 14.0650 (-87.1715) localSummer
 
             atPointWinter `shouldBe` utcWinter
             atPointSummer `shouldBe` utcSummer

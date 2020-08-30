@@ -18,3 +18,15 @@ Just "America/New_York"
 ```
 
 Additionally, we now depend on the [timezone-series](https://hackage.haskell.org/package/timezone-series) and [timezone-olson](https://hackage.haskell.org/package/timezone-olson)
+
+With that, you can look up the UTC time at a point in time and space:
+
+```haskell
+>>> localWinter <- parseTimeM True defaultTimeLocale "%Y-%-m-%-d %T" "2019-12-25 00:30:00"
+>>> utcTime <- timeAtPointToUTC "./test/tz_db/timezone21.bin" 40.7831 (-73.9712) localWinter
+2019-12-25 05:30:00 UTC
+
+>>> localSummer <- parseTimeM True defaultTimeLocale "%Y-%-m-%-d %T" "2019-07-25 00:30:00"
+>>> utcTime <- timeAtPointToUTC "./test/tz_db/timezone21.bin" 40.7831 (-73.9712) localWinter
+2019-12-25 04:30:00 UTC
+```
