@@ -6,6 +6,7 @@
 * Introduces `timeInTimeZoneToUTC`, for when the timezone name is already available.
 * Minor updates to help build with older Haskell versions.
 * Update github actions to build on said older haskells!
+* `TimeZoneName` is now an alias for `FilePath`.
 
 ## v0.2.1.0 (2020-08-30)
 
