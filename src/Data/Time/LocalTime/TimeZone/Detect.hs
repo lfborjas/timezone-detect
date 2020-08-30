@@ -7,10 +7,11 @@ Portability: POSIX
 Exposes utilities derived from the excellent ZoneDetect library <https://github.com/BertoldVdb/ZoneDetect>.
 To use this module, you need to obtain database files from the aforementioned library's server.
 
-Additionally, you can also derive a timezone at a point in space __and_time__ by using the *When variants.
+Additionally, if you have a local time, latitude and longitude, we use the timezone-series and timezone-olson
+packages to help determine the equivalent UTC instant to that point in geography and time.
 
-Currently, only one function for looking up the name of a Timezone is provided, but the underlying
-library also has richer functions for opening timezone database files, finding applicable zones, etc.
+The only relevant binding to ZoneDetect is 'lookupTimeZoneName', richer information that plays neatly
+with the notion of 'TimeZone' could be derived, but I didn't have a personal need for that yet.
 -}
 
 module Data.Time.LocalTime.TimeZone.Detect 
@@ -32,11 +33,12 @@ import Control.Monad.IO.Class (MonadIO(liftIO))
 
 -- | Alias for clarity, timezones are short strings that follow the IANA conventions
 -- documented here:
--- https://data.iana.org/time-zones/tz-link.html
+-- <https://data.iana.org/time-zones/tz-link.html>
 type TimeZoneName = String
 
 -- | Gets timezone info from the standard location in UNIX systems.
--- the name should be one of the standard tz database names.
+-- The name should be one of the standard tz database names, as returned
+-- by `lookupTimeZoneName`.
 -- See: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>
 getTimeZoneSeriesFromOlsonFileUNIX :: TimeZoneName -> IO TimeZoneSeries
 getTimeZoneSeriesFromOlsonFileUNIX tzName =
@@ -50,8 +52,7 @@ getTimeZoneSeriesFromOlsonFileUNIX tzName =
 -- >>> tz <- lookupTimeZoneName "./test/tz_db/timezone21.bin" 40.7831 (-73.9712) :: Maybe TimeZoneName
 -- Just "America/New_York"
 -- 
--- Failure conditions are: invalid database file, or invalid coordinates,
--- both will cause the given monad to `fail`.
+-- An invalid database file, or invalid coordinates, will cause the given monad to `fail`.
 lookupTimeZoneName :: MonadFail m => FilePath -> Double -> Double -> m TimeZoneName
 lookupTimeZoneName databaseLocation lat lng = 
     unsafePerformIO $ do
