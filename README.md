@@ -1,5 +1,8 @@
 # TimezoneDetect
 
+![build](https://github.com/lfborjas/timezone-detect/workflows/Haskell%20CI/badge.svg)
+
+
 Haskell bindings to the excellent [ZoneDetect](https://github.com/BertoldVdb/ZoneDetect) library.
 
 ## Usage
