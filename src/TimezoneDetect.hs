@@ -26,7 +26,7 @@ type TimezoneName = String
 -- to obtain timezone database files (<https://github.com/BertoldVdb/ZoneDetect/tree/05567e367576d7f3efa00083b7661a01e43dc8ca/database>)
 -- Once in possesion of said files, the lookup looks as follows:
 -- 
--- > lookupTimezone "./test/tz_db/timezone21.bin" 40.7831 (-73.9712)
+-- >>> lookupTimezone "./test/tz_db/timezone21.bin" 40.7831 (-73.9712)
 -- Right "America/New_York"
 -- 
 -- Failure conditions are: invalid database file, or invalid coordinates,
