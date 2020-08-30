@@ -4,13 +4,13 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 38d5e310ad4b828f71ddd087380182d12af2a28c1d0f6c071a85581c34f499fa
+-- hash: 59b6d61cd73e0948b911ba44ae40ef56a08bbe0cea94cdb81dcf65be08649a5e
 
 name:           timezone-detect
-version:        0.1.0.0
-synopsis:       Haskell bindings for the zone-detect C library
+version:        0.2.0.0
+synopsis:       Haskell bindings for the zone-detect C library; extra utilities for time-aware detection.
 description:    Please see the README on GitHub at <https://github.com/lfborjas/timezone-detect#readme>
-category:       Data, Foreign
+category:       Data, Foreign, Time
 homepage:       https://github.com/lfborjas/timezone-detect#readme
 bug-reports:    https://github.com/lfborjas/timezone-detect/issues
 author:         Luis Borjas Reyes
@@ -28,8 +28,8 @@ source-repository head
 
 library
   exposed-modules:
+      Data.Time.LocalTime.TimeZone.Detect
       Foreign.ZoneDetect
-      TimezoneDetect
   other-modules:
       Paths_timezone_detect
   hs-source-dirs:
@@ -43,6 +43,9 @@ library
       csrc/zonedetect.c
   build-depends:
       base >=4.7 && <4.14
+    , time >=1.9.1 && <=1.10
+    , timezone-olson >=0.2.0 && <0.3
+    , timezone-series >=0.1.0 && <0.2
   default-language: Haskell2010
 
 test-suite timezone-detect-test
@@ -60,5 +63,8 @@ test-suite timezone-detect-test
       base >=4.7 && <4.14
     , directory >=1.3 && <1.4
     , hspec >=2.7 && <2.8
+    , time >=1.9.1 && <=1.10
     , timezone-detect
+    , timezone-olson >=0.2.0 && <0.3
+    , timezone-series >=0.1.0 && <0.2
   default-language: Haskell2010

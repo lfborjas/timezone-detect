@@ -1,5 +1,5 @@
 name:                timezone-detect 
-version:             0.1.0.0
+version:             0.2.0.0
 github:              "lfborjas/timezone-detect"
 license:             GPL-2
 author:              "Luis Borjas Reyes"
@@ -10,8 +10,8 @@ extra-source-files:
 - ChangeLog.md
 
 # Metadata used when publishing your package
-synopsis:            Haskell bindings for the zone-detect C library
-category:            Data, Foreign 
+synopsis:            Haskell bindings for the zone-detect C library; extra utilities for time-aware detection.
+category:            Data, Foreign, Time 
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
@@ -20,6 +20,9 @@ description:         Please see the README on GitHub at <https://github.com/lfbo
 
 dependencies:
 - base >= 4.7 && < 4.14
+- time >= 1.9.1 && <= 1.10
+- timezone-series >= 0.1.0 && < 0.2
+- timezone-olson  >= 0.2.0 && < 0.3
 
 ghc-options:
 - -Wall
