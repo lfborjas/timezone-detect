@@ -4,6 +4,8 @@
 
 * Explicitly import `MonadFail` and `fail`, hide `fail` from `Prelude`.
 * Introduces `timeInTimeZoneToUTC`, for when the timezone name is already available.
+* Minor updates to help build with older Haskell versions.
+* Update github actions to build on said older haskells!
 
 ## v0.2.1.0 (2020-08-30)
 
