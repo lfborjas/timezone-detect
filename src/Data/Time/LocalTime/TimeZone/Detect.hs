@@ -44,7 +44,7 @@ type TimeZoneName = String
 -- See: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>
 getTimeZoneSeriesFromOlsonFileUNIX :: TimeZoneName -> IO TimeZoneSeries
 getTimeZoneSeriesFromOlsonFileUNIX tzName =
-    getTimeZoneSeriesFromOlsonFile $ "/usr/share/zoneinfo/" <> tzName
+    getTimeZoneSeriesFromOlsonFile $ "/usr/share/zoneinfo/" ++ tzName
 
 -- | Given a timezone database, latitude and longitude, try to determine the
 -- timezone name. Follow the instructions in the C library's repository
@@ -60,7 +60,7 @@ lookupTimeZoneName databaseLocation lat lng =
     unsafePerformIO $ do
         zdPtr <- withCAString databaseLocation $ \dbl -> c_ZDOpenDatabase dbl
         if zdPtr == nullPtr then
-            pure $ fail (databaseLocation <> " is not a valid timezone database.")
+            pure $ fail (databaseLocation ++ " is not a valid timezone database.")
         else do
             tzName <- c_ZDHelperSimpleLookupString zdPtr
                                                    (realToFrac lat)
