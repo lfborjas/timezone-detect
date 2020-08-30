@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 92e40ac315445c96a678ce3b2447e006ac8969be3fa8d73e31888df32f039ea7
+-- hash: 38d5e310ad4b828f71ddd087380182d12af2a28c1d0f6c071a85581c34f499fa
 
 name:           timezone-detect
 version:        0.1.0.0
@@ -16,6 +16,7 @@ bug-reports:    https://github.com/lfborjas/timezone-detect/issues
 author:         Luis Borjas Reyes
 maintainer:     timezone-detect@lfborjas.com
 license:        GPL-2
+license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md

@@ -12,6 +12,6 @@ You'll need timezone database files to work with this library, see instructions 
 Once you have those files in hand, you'll be able to get a timezone from a given latitude and longitude:
 
 ```haskell
-> lookupTimeZone "./test/tz_db/timezone21.bin" 40.7831 (-73.9712)
+> lookupTimezone "./test/tz_db/timezone21.bin" 40.7831 (-73.9712)
 Right "America/New_York"
 ```
