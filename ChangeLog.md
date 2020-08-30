@@ -1,5 +1,9 @@
 # Changelog for timezone-detect
 
+## v0.2.1.1 (2020-08-30)
+
+* Explicitly import `MonadFail` and `fail`.
+
 ## v0.2.1.0 (2020-08-30)
 
 * Depend on `base >= 4.9` to ensure `MonadFail` and `lifIO` are included.

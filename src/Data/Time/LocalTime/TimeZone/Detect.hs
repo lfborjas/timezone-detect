@@ -29,7 +29,7 @@ import Data.Time.LocalTime.TimeZone.Olson
 import Data.Time.LocalTime.TimeZone.Series
 import System.IO.Unsafe (unsafePerformIO)
 import Control.Monad.IO.Class (MonadIO(liftIO))
-
+import Control.Monad.Fail (MonadFail, fail)
 
 -- | Alias for clarity, timezones are short strings that follow the IANA conventions
 -- documented here:
