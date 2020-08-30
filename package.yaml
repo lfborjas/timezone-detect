@@ -10,7 +10,7 @@ extra-source-files:
 - ChangeLog.md
 
 # Metadata used when publishing your package
-synopsis:            Haskell bindings for the zone-detect C library; extra utilities for time-aware detection.
+synopsis:            Haskell bindings for the zone-detect C library; plus tz-aware utils.
 category:            Data, Foreign, Time 
 
 # To avoid duplicated efforts in documentation and dealing with the
