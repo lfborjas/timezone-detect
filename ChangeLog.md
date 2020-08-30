@@ -2,7 +2,7 @@
 
 ## v0.2.2.0 (2020-08-30)
 
-* Explicitly import `MonadFail` and `fail`, hide `fail` from `Prelude`.
+* Explicitly import `MonadFail` and `fail`; hide the `fail` from `Prelude`.
 * Introduces `timeInTimeZoneToUTC`, for when the timezone name is already available.
 * Minor updates to help build with older Haskell versions.
 * Update github actions to build on said older haskells!
@@ -10,7 +10,7 @@
 
 ## v0.2.1.0 (2020-08-30)
 
-* Depend on `base >= 4.9` to ensure `MonadFail` and `lifIO` are included.
+* Depend on `base >= 4.9` to ensure `MonadFail` and `liftIO` are included.
 
 ## v0.2.0.0 (2020-08-30)
 

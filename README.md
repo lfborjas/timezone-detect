@@ -29,5 +29,14 @@ With that, you can look up the UTC time at a point in time and space:
 
 >>> localSummer <- parseTimeM True defaultTimeLocale "%Y-%-m-%-d %T" "2019-07-25 00:30:00"
 >>> utcTime <- timeAtPointToUTC "./test/tz_db/timezone21.bin" 40.7831 (-73.9712) localWinter
-2019-12-25 04:30:00 UTC
+2019-07-25 04:30:00 UTC
+```
+
+You can also opt to obtain the timezone name separately (if you wanted to isolate that as a failure scenario,)
+and, once in possession of it, use `timeInTimeZoneToUTC`:
+
+```haskell
+>>> localSummer <- parseTimeM True defaultTimeLocale "%Y-%-m-%-d %T" "2019-07-25 00:30:00"
+>>> utcTime <- timeInTimeZoneToUTC "America/New_York" localSummer
+2019-07-25 04:30:00 UTC
 ```
