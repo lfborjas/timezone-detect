@@ -10,8 +10,8 @@ extra-source-files:
 - ChangeLog.md
 
 # Metadata used when publishing your package
-synopsis:            Haskell bindings for the zone-detect C library
-category:            Data, Foreign 
+synopsis:            Haskell bindings for the zone-detect C library; extra utilities for time-aware detection.
+category:            Data, Foreign, Time 
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
