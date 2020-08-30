@@ -17,6 +17,7 @@ with the notion of 'TimeZone' could be derived, but I didn't have a personal nee
 module Data.Time.LocalTime.TimeZone.Detect 
     ( lookupTimeZoneName
     , timeAtPointToUTC
+    , timeInTimeZoneToUTC
     , getTimeZoneSeriesFromOlsonFileUNIX
     , TimeZoneName
 ) where
@@ -30,6 +31,7 @@ import Data.Time.LocalTime.TimeZone.Series
 import System.IO.Unsafe (unsafePerformIO)
 import Control.Monad.IO.Class (MonadIO(liftIO))
 import Control.Monad.Fail (MonadFail, fail)
+import Prelude hiding (fail)
 
 -- | Alias for clarity, timezones are short strings that follow the IANA conventions
 -- documented here:
@@ -78,4 +80,11 @@ timeAtPointToUTC :: FilePath -> Double -> Double -> LocalTime -> IO UTCTime
 timeAtPointToUTC databaseLocation lat lng referenceTime = do
     tzName <- lookupTimeZoneName databaseLocation lat lng
     tzSeries <- liftIO $ getTimeZoneSeriesFromOlsonFileUNIX tzName
+    return $ localTimeToUTC' tzSeries referenceTime
+
+-- | Given a timezone name (presumably obtained via `lookupTimeZoneName`,)
+-- and a reference time in `LocalTime`, find the UTC equivalent.
+timeInTimeZoneToUTC :: TimeZoneName -> LocalTime -> IO UTCTime
+timeInTimeZoneToUTC tzName referenceTime = do
+    tzSeries <- getTimeZoneSeriesFromOlsonFileUNIX tzName
     return $ localTimeToUTC' tzSeries referenceTime

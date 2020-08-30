@@ -62,3 +62,19 @@ spec = do
 
             atPointWinter `shouldBe` utcWinter
             atPointSummer `shouldBe` utcSummer
+
+    describe "timeInTimeZoneToUTC" $ do
+        it "calculates a UTC instant given a timezone name" $ do
+            localWinter <- localTimeFromString "2019-12-25 00:30:00"
+            localSummer <- localTimeFromString "2019-08-25 00:30:00"
+            utcWinter <- utcFromString "2019-12-25 05:30:00"
+            utcSummer <- utcFromString "2019-08-25 04:30:00"
+            alwaysSummer  <- utcFromString "2019-08-25 06:30:00"
+
+            atTZWinter <- timeInTimeZoneToUTC "America/New_York" localWinter
+            atTZSummer <- timeInTimeZoneToUTC "America/New_York" localSummer
+            atTZNoDST  <- timeInTimeZoneToUTC "America/Tegucigalpa" localSummer
+
+            atTZWinter `shouldBe` utcWinter
+            atTZSummer `shouldBe` utcSummer
+            atTZNoDST  `shouldBe` alwaysSummer

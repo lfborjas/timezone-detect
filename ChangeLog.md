@@ -2,7 +2,8 @@
 
 ## v0.2.1.1 (2020-08-30)
 
-* Explicitly import `MonadFail` and `fail`.
+* Explicitly import `MonadFail` and `fail`, hide `fail` from `Prelude`.
+* Introduces `timeInTimeZoneToUTC`, for when the timezone name is already available.
 
 ## v0.2.1.0 (2020-08-30)
 
