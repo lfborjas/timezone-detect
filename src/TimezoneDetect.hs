@@ -23,10 +23,12 @@ type TimezoneName = String
 
 -- | Given a timezone database, latitude and longitude, try to determine the
 -- timezone name. Follow the instructions in the C library's repository
--- to obtain timezone database files (https://github.com/BertoldVdb/ZoneDetect/tree/05567e367576d7f3efa00083b7661a01e43dc8ca/database)
+-- to obtain timezone database files (<https://github.com/BertoldVdb/ZoneDetect/tree/05567e367576d7f3efa00083b7661a01e43dc8ca/database>)
 -- Once in possesion of said files, the lookup looks as follows:
--- >>> lookupTimezone "./test/tz_db/timezone21.bin" 40.7831 (-73.9712)
+-- 
+-- > lookupTimezone "./test/tz_db/timezone21.bin" 40.7831 (-73.9712)
 -- Right "America/New_York"
+-- 
 -- Failure conditions are: invalid database file, or invalid coordinates,
 -- both are returned as `Left` values.
 lookupTimezone :: FilePath -> Float -> Float -> Either String TimezoneName
