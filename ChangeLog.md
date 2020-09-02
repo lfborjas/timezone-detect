@@ -1,5 +1,13 @@
 # Changelog for timezone-detect
 
+## v0.3.0.0 (2020-09-02)
+
+* Introduce `openTimeZoneDatabase` and `closeTimeZoneDatabase` to hew closer to
+  the underlying library's intended usage.
+* Changes the signature of `lookupTimeZoneName` to take a timezone database, not
+  a file.
+* Introduces the `FromFile` variant that _does_ look up the timezone in a file.
+
 ## v0.2.2.0 (2020-08-30)
 
 * Explicitly import `MonadFail` and `fail`; hide the `fail` from `Prelude`.

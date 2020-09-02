@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 03ea7e2e9760969e8b6c4e2a5f8cb5a17b448db1b6b3d5749e18cf3f7336553a
+-- hash: cada8fe310ed1ed1c85911dc9e3b40c06e5e111b2984429f42aa5a762a956c9a
 
 name:           timezone-detect
-version:        0.2.2.0
+version:        0.3.0.0
 synopsis:       Haskell bindings for the zone-detect C library; plus tz-aware utils.
 description:    Please see the README on GitHub at <https://github.com/lfborjas/timezone-detect#readme>
 category:       Data, Foreign, Time

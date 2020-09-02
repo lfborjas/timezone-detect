@@ -13,8 +13,17 @@ You'll need timezone database files to work with this library, see instructions 
 Once you have those files in hand, you'll be able to get a timezone from a given latitude and longitude:
 
 ```haskell
->>> lookupTimeZoneName "./test/tz_db/timezone21.bin" 40.7831 (-73.9712) :: Maybe TimeZoneName
+>>> db <- openTimeZoneDatabase "./test/tz_db/timezone21.bin" 
+>>> tz <- lookupTimeZoneName db 40.7831 (-73.9712) :: Maybe TimeZoneName
 Just "America/New_York"
+>>> closeTimeZoneDatabase db
+```
+
+A convenience function that opens and closes the file when done is also provided, specialized to `IO`:
+
+```haskell
+tz <- lookupTimeZoneNameFromFile "./test/tz_db/timezone21.bin" 40.7831 (-73.9712)
+"America/New_York"
 ```
 
 Additionally, we now depend on the [timezone-series](https://hackage.haskell.org/package/timezone-series) and [timezone-olson](https://hackage.haskell.org/package/timezone-olson) packages to add awareness of `tz database` information.
@@ -23,12 +32,13 @@ With that, you can look up the UTC time at a point in time and space:
 
 ```haskell
 >>> import Data.Time
+>> db <- openTimeZoneDatabase "./test/tz_db/timezone21.bin"
 >>> localWinter <- parseTimeM True defaultTimeLocale "%Y-%-m-%-d %T" "2019-12-25 00:30:00"
->>> utcTime <- timeAtPointToUTC "./test/tz_db/timezone21.bin" 40.7831 (-73.9712) localWinter
+>>> utcTime <- timeAtPointToUTC db 40.7831 (-73.9712) localWinter
 2019-12-25 05:30:00 UTC
 
 >>> localSummer <- parseTimeM True defaultTimeLocale "%Y-%-m-%-d %T" "2019-07-25 00:30:00"
->>> utcTime <- timeAtPointToUTC "./test/tz_db/timezone21.bin" 40.7831 (-73.9712) localWinter
+>>> utcTime <- timeAtPointToUTC db 40.7831 (-73.9712) localWinter
 2019-07-25 04:30:00 UTC
 ```
 

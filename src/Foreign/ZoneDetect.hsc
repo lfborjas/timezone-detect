@@ -30,5 +30,8 @@ data ZoneDetectInfo = ZoneDetectInfo
 foreign import ccall unsafe "zonedetect.h ZDOpenDatabase"
     c_ZDOpenDatabase :: CString -> IO (Ptr ZoneDetectInfo)
 
+foreign import ccall unsafe "zonedetect.hs ZDCloseDatabase"
+    c_ZDCloseDatabase :: Ptr ZoneDetectInfo -> IO ()
+
 foreign import ccall unsafe "zonedetect.h ZDHelperSimpleLookupString"
     c_ZDHelperSimpleLookupString :: Ptr ZoneDetectInfo -> CFloat -> CFloat -> IO CString
