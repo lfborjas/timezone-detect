@@ -2,11 +2,15 @@
 
 ## v0.3.0.0 (2020-09-02)
 
+**Breaking Changes!**
+
 * Introduce `openTimeZoneDatabase` and `closeTimeZoneDatabase` to hew closer to
-  the underlying library's intended usage.
+  the underlying library's intended usage. And `withTimeZoneDatabase` manage the
+  opening and closing of the TZ file around an IO computation with it.
 * Changes the signature of `lookupTimeZoneName` to take a timezone database, not
-  a file.
-* Introduces the `FromFile` variant that _does_ look up the timezone in a file.
+  a file, same with `timeAtPointToUTC`. Introduces `*FromFile` variants that
+  work with the path to the DB file and manage the opening/closing.
+
 
 ## v0.2.2.0 (2020-08-30)
 

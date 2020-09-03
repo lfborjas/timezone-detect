@@ -15,20 +15,41 @@ utcFromString :: String -> IO UTCTime
 utcFromString =
     parseTimeM True defaultTimeLocale "%Y-%-m-%-d %T"
 
-withDatabaseFile :: (TimeZoneDatabase -> IO ()) -> IO ()
-withDatabaseFile f = do
-    db <- openTimeZoneDatabase zoneFile
-    f db
-    closeTimeZoneDatabase db
-
 spec :: Spec
 spec = do
+    -- Simplistic functions: only work in IO, need a path to the TZ file, manage resources on their own.
     describe "lookupTimeZoneNameFromFile" $ do
-        it "doesn't need a timezone db, just a path to the file" $ do
+        it "doesn't need a timezone db, just a path to the file, to detect the timezone." $ do
             newYork <- lookupTimeZoneNameFromFile zoneFile 40.7831 (-73.9712)
             newYork `shouldBe` "America/New_York"
 
-    around withDatabaseFile $ do
+    describe "timeAtPointToUTCFromFile" $ do
+        it "doesn't need a timezone db, just a path to the file, to detect the UTC instant in a point and time" $ do
+            localSummer <- localTimeFromString "2019-08-25 00:30:00"
+            utcSummer   <- utcFromString "2019-08-25 04:30:00"
+            atPointSummer <- timeAtPointToUTCFromFile zoneFile 40.7831 (-73.9712) localSummer
+
+            atPointSummer `shouldBe` utcSummer
+    
+    describe "timeInTimeZoneToUTC" $ do
+        it "calculates a UTC instant given a timezone name" $ do
+            localWinter <- localTimeFromString "2019-12-25 00:30:00"
+            localSummer <- localTimeFromString "2019-08-25 00:30:00"
+            utcWinter <- utcFromString "2019-12-25 05:30:00"
+            utcSummer <- utcFromString "2019-08-25 04:30:00"
+            alwaysSummer  <- utcFromString "2019-08-25 06:30:00"
+
+            atTZWinter <- timeInTimeZoneToUTC "America/New_York" localWinter
+            atTZSummer <- timeInTimeZoneToUTC "America/New_York" localSummer
+            atTZNoDST  <- timeInTimeZoneToUTC "America/Tegucigalpa" localSummer
+
+            atTZWinter `shouldBe` utcWinter
+            atTZSummer `shouldBe` utcSummer
+            atTZNoDST  `shouldBe` alwaysSummer
+
+    -- More general functions: work with a reference to an open TZ DB. You can use `withTimeZoneDatabase`
+    -- for resource management (opens the file, does the computation, closes.)
+    around (withTimeZoneDatabase zoneFile) $ do
         describe "lookupTimeZoneName" $ do
             it "returns the expected timezones for known locations" $ \db -> do
                 let newYork = lookupTimeZoneName db 40.7831 (-73.9712)
@@ -69,19 +90,3 @@ spec = do
 
                 atPointWinter `shouldBe` utcWinter
                 atPointSummer `shouldBe` utcSummer
-
-    describe "timeInTimeZoneToUTC" $ do
-        it "calculates a UTC instant given a timezone name" $ do
-            localWinter <- localTimeFromString "2019-12-25 00:30:00"
-            localSummer <- localTimeFromString "2019-08-25 00:30:00"
-            utcWinter <- utcFromString "2019-12-25 05:30:00"
-            utcSummer <- utcFromString "2019-08-25 04:30:00"
-            alwaysSummer  <- utcFromString "2019-08-25 06:30:00"
-
-            atTZWinter <- timeInTimeZoneToUTC "America/New_York" localWinter
-            atTZSummer <- timeInTimeZoneToUTC "America/New_York" localSummer
-            atTZNoDST  <- timeInTimeZoneToUTC "America/Tegucigalpa" localSummer
-
-            atTZWinter `shouldBe` utcWinter
-            atTZSummer `shouldBe` utcSummer
-            atTZNoDST  `shouldBe` alwaysSummer

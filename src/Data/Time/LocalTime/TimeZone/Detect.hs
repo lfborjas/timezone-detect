@@ -12,18 +12,25 @@ packages to help determine the equivalent UTC instant to that point in geography
 
 The only relevant binding to ZoneDetect is 'lookupTimeZoneName', richer information that plays neatly
 with the notion of 'TimeZone' could be derived, but I didn't have a personal need for that yet.
+
+Functions to open, close, and work with an open database (from a valid file) are provided.
 -}
 
 module Data.Time.LocalTime.TimeZone.Detect 
     ( TimeZoneName
     , TimeZoneDatabase
+    -- for managing the database info pointer:
     , openTimeZoneDatabase
     , closeTimeZoneDatabase
+    , withTimeZoneDatabase
+    -- timezone lookup:
     , lookupTimeZoneName
     , lookupTimeZoneNameFromFile
+    -- (local time, place) -> UTC "instant"
     , timeAtPointToUTC
+    , timeAtPointToUTCFromFile
+    -- (local time, timezone name) -> UTC "instant"
     , timeInTimeZoneToUTC
-    , getTimeZoneSeriesFromOlsonFileUNIX
 ) where
 
 import Foreign.ZoneDetect
@@ -80,9 +87,8 @@ lookupTimeZoneName database lat lng =
 -- | Same as `lookupTimeZoneName`, but takes the path to the database file and only works in `IO`.
 lookupTimeZoneNameFromFile :: FilePath -> Double -> Double -> IO TimeZoneName
 lookupTimeZoneNameFromFile databaseLocation lat lng =
-    bracket (openTimeZoneDatabase databaseLocation)
-            (closeTimeZoneDatabase)
-            (\db -> lookupTimeZoneName db lat lng) 
+    withTimeZoneDatabase databaseLocation
+        (\db -> lookupTimeZoneName db lat lng) 
 
 -- | Given a timezone name (presumably obtained via `lookupTimeZoneName`,)
 -- and a reference time in `LocalTime`, find the UTC equivalent.
@@ -101,6 +107,13 @@ timeAtPointToUTC database lat lng referenceTime = do
     tzName <- lookupTimeZoneName database lat lng
     timeInTimeZoneToUTC tzName referenceTime
 
+-- | Same as `timeAtPointToUTC`, but takes the path to the timezone database file
+-- and takes care of opening and closing the file.
+timeAtPointToUTCFromFile :: FilePath -> Double -> Double -> LocalTime -> IO UTCTime
+timeAtPointToUTCFromFile databaseLocation lat lng referenceTime =
+    withTimeZoneDatabase databaseLocation
+        (\db -> timeAtPointToUTC db lat lng referenceTime) 
+
 -- | Gets timezone info from the standard location in UNIX systems.
 -- The name should be one of the standard tz database names, as returned
 -- by `lookupTimeZoneName`.
@@ -109,7 +122,8 @@ getTimeZoneSeriesFromOlsonFileUNIX :: TimeZoneName -> IO TimeZoneSeries
 getTimeZoneSeriesFromOlsonFileUNIX tzName =
     getTimeZoneSeriesFromOlsonFile $ "/usr/share/zoneinfo/" ++ tzName
 
--- | Open a timezone database file and obtain a pointer to it.
+-- | Open a timezone database file and obtain a pointer to the database,
+-- as interpreted by the underlying C code.
 openTimeZoneDatabase :: FilePath -> IO TimeZoneDatabase
 openTimeZoneDatabase databaseLocation = 
     withCAString databaseLocation $ \dbl -> c_ZDOpenDatabase dbl
@@ -117,3 +131,8 @@ openTimeZoneDatabase databaseLocation =
 -- | Given a pointer to a timezone database, close any allocated resources.
 closeTimeZoneDatabase :: TimeZoneDatabase -> IO ()
 closeTimeZoneDatabase = c_ZDCloseDatabase
+
+withTimeZoneDatabase :: FilePath -> (TimeZoneDatabase -> IO a) -> IO a
+withTimeZoneDatabase databaseLocation = 
+    bracket (openTimeZoneDatabase databaseLocation)
+            (closeTimeZoneDatabase)
