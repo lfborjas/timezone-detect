@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: cada8fe310ed1ed1c85911dc9e3b40c06e5e111b2984429f42aa5a762a956c9a
+-- hash: 997d71292b2c041835e164ac37133f6da4aeb6365f997637142ad8ea6dc6260d
 
 name:           timezone-detect
 version:        0.3.0.0
@@ -60,7 +60,8 @@ test-suite timezone-detect-test
   build-tool-depends:
       hspec-discover:hspec-discover >=2.7 && <2.8
   build-depends:
-      base >=4.9 && <4.14
+      QuickCheck >=2.12 && <=2.14
+    , base >=4.9 && <4.14
     , directory >=1.3 && <1.4
     , hspec >=2.7 && <2.8
     , time >=1.9.1 && <=1.10
