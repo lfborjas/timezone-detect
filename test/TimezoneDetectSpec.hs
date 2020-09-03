@@ -7,9 +7,6 @@ import Test.Hspec
 zoneFile :: FilePath
 zoneFile = "./test/tz_db/timezone21.bin"
 
-lookupTimeZoneName' :: Double -> Double -> Maybe TimeZoneName
-lookupTimeZoneName' = lookupTimeZoneName zoneFile
-
 localTimeFromString :: String -> IO LocalTime
 localTimeFromString = 
     parseTimeM True defaultTimeLocale "%Y-%-m-%-d %T"
@@ -18,51 +15,22 @@ utcFromString :: String -> IO UTCTime
 utcFromString =
     parseTimeM True defaultTimeLocale "%Y-%-m-%-d %T"
 
-timeAtPointToUTC' :: Double -> Double -> LocalTime -> IO UTCTime
-timeAtPointToUTC' = timeAtPointToUTC zoneFile
-
 spec :: Spec
 spec = do
-    describe "lookupTimeZoneName" $ do
-        it "calculates coordinates for known locations" $ do
-            let newYork = lookupTimeZoneName' 40.7831 (-73.9712)
-            let tegucigalpa = lookupTimeZoneName' 14.0650 (-87.1715)
-            newYork `shouldBe` (Just "America/New_York")
-            tegucigalpa `shouldBe` (Just "America/Tegucigalpa")
+    -- Simplistic functions: only work in IO, need a path to the TZ file, manage resources on their own.
+    describe "lookupTimeZoneNameFromFile" $ do
+        it "doesn't need a timezone db, just a path to the file, to detect the timezone." $ do
+            newYork <- lookupTimeZoneNameFromFile zoneFile 40.7831 (-73.9712)
+            newYork `shouldBe` "America/New_York"
 
-        it "returns an error value when given an invalid timezone file path" $ do
-            let wrong = lookupTimeZoneName "bogus" 0.0 0.0
-            wrong `shouldBe` Nothing -- invalid DB file
-
-        it "returns an error value when given invalid coordinates" $ do
-            let outOfThisWorld = lookupTimeZoneName' 40000000.7 (-73.97)
-            outOfThisWorld `shouldBe` Nothing -- invalid coordinates
-
-    describe "timeAtPointToUTC" $ do
-        it "calculates a UTC instant at a point in time and space in New York" $ do
-            localWinter <- localTimeFromString "2019-12-25 00:30:00"
+    describe "timeAtPointToUTCFromFile" $ do
+        it "doesn't need a timezone db, just a path to the file, to detect the UTC instant in a point and time" $ do
             localSummer <- localTimeFromString "2019-08-25 00:30:00"
-            utcWinter <- utcFromString "2019-12-25 05:30:00"
-            utcSummer <- utcFromString "2019-08-25 04:30:00"
-            
-            atPointWinter <- timeAtPointToUTC' 40.7831 (-73.9712) localWinter
-            atPointSummer <- timeAtPointToUTC' 40.7831 (-73.9712) localSummer
+            utcSummer   <- utcFromString "2019-08-25 04:30:00"
+            atPointSummer <- timeAtPointToUTCFromFile zoneFile 40.7831 (-73.9712) localSummer
 
-            atPointWinter `shouldBe` utcWinter
             atPointSummer `shouldBe` utcSummer
-
-        it "calculates a UTC instant at a point in time and space in Tegucigalpa (no DST)" $ do
-            localWinter <- localTimeFromString "2019-12-25 00:30:00"
-            localSummer <- localTimeFromString "2019-08-25 00:30:00"
-            utcWinter <- utcFromString "2019-12-25 06:30:00"
-            utcSummer <- utcFromString "2019-08-25 06:30:00"
-            
-            atPointWinter <- timeAtPointToUTC' 14.0650 (-87.1715) localWinter
-            atPointSummer <- timeAtPointToUTC' 14.0650 (-87.1715) localSummer
-
-            atPointWinter `shouldBe` utcWinter
-            atPointSummer `shouldBe` utcSummer
-
+    
     describe "timeInTimeZoneToUTC" $ do
         it "calculates a UTC instant given a timezone name" $ do
             localWinter <- localTimeFromString "2019-12-25 00:30:00"
@@ -78,3 +46,47 @@ spec = do
             atTZWinter `shouldBe` utcWinter
             atTZSummer `shouldBe` utcSummer
             atTZNoDST  `shouldBe` alwaysSummer
+
+    -- More general functions: work with a reference to an open TZ DB. You can use `withTimeZoneDatabase`
+    -- for resource management (opens the file, does the computation, closes.)
+    around (withTimeZoneDatabase zoneFile) $ do
+        describe "lookupTimeZoneName" $ do
+            it "returns the expected timezones for known locations" $ \db -> do
+                let newYork = lookupTimeZoneName db 40.7831 (-73.9712)
+                    tegucigalpa = lookupTimeZoneName db 14.0650 (-87.1715)
+                newYork `shouldBe` (Just "America/New_York")
+                tegucigalpa `shouldBe` (Just "America/Tegucigalpa")
+
+            it "returns an error value when given invalid coordinates" $ \db -> do
+                let outOfThisWorld = lookupTimeZoneName db 40000000.7 (-73.97)
+                outOfThisWorld `shouldBe` Nothing -- invalid coordinates
+
+            it "returns an error value when given a bogus database" $ \_ -> do
+                badDb <- openTimeZoneDatabase "bogus"
+                let bogus = lookupTimeZoneName badDb 40.7831 (-73.9712)
+                bogus `shouldBe` Nothing
+
+        describe "timeAtPointToUTC" $ do
+            it "calculates a UTC instant at a point in time and space in New York" $ \db -> do
+                localWinter <- localTimeFromString "2019-12-25 00:30:00"
+                localSummer <- localTimeFromString "2019-08-25 00:30:00"
+                utcWinter <- utcFromString "2019-12-25 05:30:00"
+                utcSummer <- utcFromString "2019-08-25 04:30:00"
+
+                atPointWinter <- timeAtPointToUTC db 40.7831 (-73.9712) localWinter
+                atPointSummer <- timeAtPointToUTC  db 40.7831 (-73.9712) localSummer
+
+                atPointWinter `shouldBe` utcWinter
+                atPointSummer `shouldBe` utcSummer
+
+            it "calculates a UTC instant at a point in time and space in Tegucigalpa (no DST)" $ \db -> do
+                localWinter <- localTimeFromString "2019-12-25 00:30:00"
+                localSummer <- localTimeFromString "2019-08-25 00:30:00"
+                utcWinter <- utcFromString "2019-12-25 06:30:00"
+                utcSummer <- utcFromString "2019-08-25 06:30:00"
+
+                atPointWinter <- timeAtPointToUTC db 14.0650 (-87.1715) localWinter
+                atPointSummer <- timeAtPointToUTC db 14.0650 (-87.1715) localSummer
+
+                atPointWinter `shouldBe` utcWinter
+                atPointSummer `shouldBe` utcSummer

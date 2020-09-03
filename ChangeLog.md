@@ -1,5 +1,17 @@
 # Changelog for timezone-detect
 
+## v0.3.0.0 (2020-09-02)
+
+**Breaking Changes!**
+
+* Introduce `openTimeZoneDatabase` and `closeTimeZoneDatabase` to hew closer to
+  the underlying library's intended usage. And `withTimeZoneDatabase` to manage the
+  opening and closing of the TZ file around an IO computation with it.
+* Changes the signature of `lookupTimeZoneName` to take a timezone database, not
+  a file, same with `timeAtPointToUTC`. Introduces `*FromFile` variants that
+  work with the path to the DB file and manage the opening/closing.
+
+
 ## v0.2.2.0 (2020-08-30)
 
 * Explicitly import `MonadFail` and `fail`; hide the `fail` from `Prelude`.
