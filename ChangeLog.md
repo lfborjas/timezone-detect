@@ -1,5 +1,11 @@
 # Changelog for timezone-detect
 
+## v0.3.0.1rc 
+
+** In development, not released to hackage yet!**
+
+* Adds property tests
+
 ## v0.3.0.0 (2020-09-02)
 
 **Breaking Changes!**
