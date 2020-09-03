@@ -5,7 +5,7 @@
 **Breaking Changes!**
 
 * Introduce `openTimeZoneDatabase` and `closeTimeZoneDatabase` to hew closer to
-  the underlying library's intended usage. And `withTimeZoneDatabase` manage the
+  the underlying library's intended usage. And `withTimeZoneDatabase` to manage the
   opening and closing of the TZ file around an IO computation with it.
 * Changes the signature of `lookupTimeZoneName` to take a timezone database, not
   a file, same with `timeAtPointToUTC`. Introduces `*FromFile` variants that

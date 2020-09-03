@@ -61,7 +61,7 @@ type TimeZoneDatabase = Ptr ZoneDetectInfo
 -- Once in possesion of said files, the lookup looks as follows:
 -- 
 -- >>> db <- openTimeZoneDatabase "./test/tz_db/timezone21.bin" 
--- >>> tz <- lookupTimeZoneName db 40.7831 (-73.9712) :: Maybe TimeZoneName
+-- >>> let tz = lookupTimeZoneName db 40.7831 (-73.9712) :: Maybe TimeZoneName
 -- Just "America/New_York"
 -- >>> closeTimeZoneDatabase db
 -- 
@@ -132,6 +132,8 @@ openTimeZoneDatabase databaseLocation =
 closeTimeZoneDatabase :: TimeZoneDatabase -> IO ()
 closeTimeZoneDatabase = c_ZDCloseDatabase
 
+-- | Given a path to a timezone database file, and a computation to run with it,
+-- takes care of opening the file, running the computation and then closing it.
 withTimeZoneDatabase :: FilePath -> (TimeZoneDatabase -> IO a) -> IO a
 withTimeZoneDatabase databaseLocation = 
     bracket (openTimeZoneDatabase databaseLocation)
