@@ -3,7 +3,7 @@ module TimezoneDetectSpec (spec) where
 import Data.Time
 import Data.Time.LocalTime.TimeZone.Detect
 import Test.Hspec
-import Test.QuickCheck (forAll, suchThat, arbitrary, Gen)
+import Test.QuickCheck (oneof, choose, forAll, Gen)
 import Data.Maybe (isNothing, isJust)
 
 zoneFile :: FilePath
@@ -101,27 +101,14 @@ spec = do
                 atPointWinter `shouldBe` utcWinter
                 atPointSummer `shouldBe` utcSummer
 
--- for property testing
-genLatitude :: Gen Double
-genLatitude = abs <$> (arbitrary :: Gen Double) `suchThat` (\d -> d >= (-90.0) && d <= 90.0)
-
-genLongitude :: Gen Double
-genLongitude = abs <$> (arbitrary :: Gen Double) `suchThat` (\d -> d >= (-180.0) && d <= 180.0)
-
 genCoords :: Gen (Double, Double)
 genCoords = do
-    lat <- genLatitude
-    lng <- genLongitude
+    lat <- choose (-90.0, 90.0)
+    lng <- choose (-180.0, 180.0)
     return (lat, lng)
-
-genNotLatitude :: Gen Double
-genNotLatitude = abs <$> (arbitrary :: Gen Double) `suchThat` (\d -> d <= (-90.0) || d >= 90.0)
-
-genNotLongitude :: Gen Double
-genNotLongitude = abs <$> (arbitrary :: Gen Double) `suchThat` (\d -> d <= (-180.0) || d >= 180.0)
 
 genBadCoords :: Gen (Double, Double)
 genBadCoords = do
-    lat <- genNotLatitude
-    lng <- genNotLongitude
+    lat <- oneof [choose (-360, -90), choose (90, 360)]
+    lng <- oneof [choose (-360, -180), choose (180, 360)]
     return (lat, lng)
