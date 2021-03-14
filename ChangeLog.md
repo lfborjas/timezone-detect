@@ -1,10 +1,9 @@
 # Changelog for timezone-detect
 
-## v0.3.0.1rc 
+## v0.3.0.1 (2021-03-14)
 
-** In development, not released to hackage yet!**
-
-* Adds property tests
+* Adds property tests.
+* Updates base to work with newer versions of Haskell.
 
 ## v0.3.0.0 (2020-09-02)
 
